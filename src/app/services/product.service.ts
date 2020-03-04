@@ -8,15 +8,16 @@ import { map } from 'rxjs/operators';
 })
 export class ProductService {
 private urlBase = 'http://localhost:7070/api/products';
+                   
   constructor(private httpClient:HttpClient) { }
   getProductList(): Observable<Product[]>{
     return this.httpClient.get<GetResponse>(this.urlBase).pipe(
-      map(response => response._Embeded.products)
+      map(response => response._embedded.products)
     );
   }
 }
 interface GetResponse{
-  _Embeded:{
+  _embedded:{
     products:Product[];
   }
 }
