@@ -7,17 +7,19 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ProductService {
-private urlBase = 'http://localhost:7070/api/products';
-                   
-  constructor(private httpClient:HttpClient) { }
-  getProductList(): Observable<Product[]>{
-    return this.httpClient.get<GetResponse>(this.urlBase).pipe(
+  private urlBase = 'http://localhost:7070/api/products';
+
+  constructor(private httpClient: HttpClient) { }
+  getProductList(theCategoryId: number): Observable<Product[]> {
+    // build url based on category id
+    const searchUrl = `${this.urlBase}/search/findByCategoryId?id=${theCategoryId}`
+    return this.httpClient.get<GetResponse>(searchUrl).pipe(
       map(response => response._embedded.products)
     );
   }
 }
-interface GetResponse{
-  _embedded:{
-    products:Product[];
+interface GetResponse {
+  _embedded: {
+    products: Product[];
   }
 }
