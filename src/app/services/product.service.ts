@@ -15,15 +15,25 @@ export class ProductService {
   getProductList(theCategoryId: number): Observable<Product[]> {
     // build url based on category id
     const searchUrl = `${this.urlBase}/search/findByCategoryId?id=${theCategoryId}`
-    return this.httpClient.get<GetResponse>(searchUrl).pipe(
-      map(response => response._embedded.products)
-    );
+    return this.getProduct(searchUrl);
   }
+  
   // get list of category for the menu
   getProductCategory(): Observable<ProductCategory[]> {
     return this.httpClient.get<GetResponseProductCaategory>(this.categoryUrl).pipe(
       map(response => response._embedded.productCategory)
     );
+  }
+
+  //call search method from spring app
+  searchProduct(theKey: string): Observable<Product[]> {
+    const searchUrl = `${this.urlBase}/search/findByNameContaining?name=${theKey}`;
+    return this.getProduct(searchUrl);
+  }
+
+  private getProduct(searchUrl: string): Observable<Product[]> {
+    return this.httpClient.get<GetResponse>(searchUrl)
+      .pipe(map(response => response._embedded.products));
   }
 }
 

@@ -7,5 +7,5 @@ export class Product {
     active: boolean;
     unitsInStock: number;
     dateCreated: Date;
-    lastUpdate: Date;
+    lastUpdate: Date;    
 }
