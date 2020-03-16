@@ -10,10 +10,15 @@ import { typeWithParameters } from '@angular/compiler/src/render3/util';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
-  products: Product[];
-  currenCategoryId: number;
+  products: Product[] = [];
+  currenCategoryId: number = 1;
   currentCategoryName: string;
-  searchMode: boolean;
+  searchMode: boolean = false;
+  //pagenation attributes
+  pageNumber: number = 1;
+  pageSize: number = 10;
+  totalElements: number = 0;
+  previousCategoryId: number = 1;
 
   constructor(private productService: ProductService,
     private route: ActivatedRoute) { }
@@ -40,6 +45,7 @@ export class ProductListComponent implements OnInit {
       }
     )
   }
+
   handleListProducts() {
     // check if "id" is available
     const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
@@ -52,10 +58,32 @@ export class ProductListComponent implements OnInit {
       this.currenCategoryId = 1;
       this.currentCategoryName = 'Books';
     }
-    this.productService.getProductList(this.currenCategoryId).subscribe(
-      data => {
-        this.products = data;
-      }
-    )
+    //check if have different category than previous
+
+    //if have different category id than previous
+    //then set page number back to 1
+    if (this.previousCategoryId != this.currenCategoryId) {
+      this.currenCategoryId = 1;
+    }
+
+    this.previousCategoryId = this.currenCategoryId;
+    console.log(`currenCategoryId: ${this.currenCategoryId}, PageNumber: ${this.pageNumber}`);
+    // get the product for given category id
+    this.productService.getProductListPaginate(this.pageNumber - 1, this.pageSize, this.currenCategoryId)
+      .subscribe(this.processResult());
+    // this.productService.getProductList(this.currenCategoryId).subscribe(
+    //   data => {
+    //     this.products = data;
+    //   }
+    // )
+  }
+  //map data from spring to attribute
+  processResult() {
+    return data => {
+      this.products = data._embedded.products;
+      this.pageNumber = data.page.number + 1;
+      this.pageSize = data.page.size;
+      this.totalElements = data.page.totalElements;
+    };
   }
 }

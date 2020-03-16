@@ -1,4 +1,5 @@
 export class Product {
+    id: String;
     sku: string;
     name: string;
     description: string;
@@ -7,5 +8,5 @@ export class Product {
     active: boolean;
     unitsInStock: number;
     dateCreated: Date;
-    lastUpdate: Date;    
+    lastUpdate: Date;
 }
